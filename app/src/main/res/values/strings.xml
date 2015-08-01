@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Intelligence Calculator</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="calculate_button">Calculate</string>
+    <string name="expression_hint">Write expression here...</string>
 </resources>
