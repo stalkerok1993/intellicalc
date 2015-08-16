@@ -113,7 +113,7 @@ public abstract class Expression {
             // brackets (vector or just expression in brackets)
             node = searchInBrackets(tempExpr, position);
         } else if (opData.operator != null) {
-            if (node == null) { // TODO: set limits of expression in object with setStartPos & setEndPos
+            if (node == null) {
                 // binary operator found
                 String leftOperand = tempExpr.substring(0, opData.place);
                 Expression leftOperandExpr = Expression.localParse(leftOperand, position);
