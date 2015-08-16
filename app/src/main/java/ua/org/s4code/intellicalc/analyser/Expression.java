@@ -144,12 +144,27 @@ public abstract class Expression {
 
             if (node == null && isLiteral(tempExpr)) {
                 // literal
-                node = new Literal(Double.parseDouble(tempExpr));
+                double num = 0.0;
+                try {
+                    num = Double.parseDouble(tempExpr);
+                }
+                catch (NumberFormatException exception) {
+                    throw new ExprException(position, position + tempExpr.length(),
+                            "This seams to be a number, but it isn't.");
+                }
+
+                node = new Literal(num);
             }
         }
 
-        node.setStartPos(position);
-        node.setEndPos(position + tempExpr.length());
+        if (node != null) {
+            node.setStartPos(position);
+            node.setEndPos(position + tempExpr.length());
+        }
+        else {
+            throw new ExprException(position, position + tempExpr.length(),
+                    "There is some unexpected logic.");
+        }
 
         return node;
     }
@@ -203,7 +218,7 @@ public abstract class Expression {
 
             if (bracketStack.size() == 0) {
                 if (expression.length() <= 2) {
-                    // there is no place for brackets
+                    // when there is no place for brackets
                     opData.inBrackets = false;
                 }
 
