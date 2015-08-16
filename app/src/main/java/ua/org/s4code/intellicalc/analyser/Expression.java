@@ -1,5 +1,7 @@
 package ua.org.s4code.intellicalc.analyser;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
@@ -176,9 +178,11 @@ public abstract class Expression {
     private static OperatorData findOperator(String expression, int position) throws ExprException {
         OperatorData opData = new OperatorData();
 
-        ArrayList<Integer> bracketStack = new ArrayList<>();
+        // used to mark position in text where exception is
         int lastBracketPos = -1;
         int firstBracketPos = -1;
+
+        ArrayList<Integer> bracketStack = new ArrayList<>();
         for (int i = 0; i < expression.length(); i++) {
             char current = expression.charAt(i);
 
@@ -202,14 +206,13 @@ public abstract class Expression {
                             if (bracketStack.get(last) == t) { // closed bracket of a matched type
                                 if (lastBracketPos + 1 == i) {
                                     throw new ExprException(position + lastBracketPos,
-                                            position + i + 1,
-                                            "There are empty brackets.");
+                                            position + i + 1, "There is the empty brackets.");
                                 }
 
                                 bracketStack.remove(last);
                             } else {
                                 throw new ExprException(position + lastBracketPos, position + i + 1,
-                                        "There are bracket that do not match previous bracket.");
+                                        "There is the bracket that do not match previous bracket.");
                             }
                         }
                     }
