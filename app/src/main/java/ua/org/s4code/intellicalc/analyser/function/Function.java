@@ -10,6 +10,7 @@ import ua.org.s4code.intellicalc.analyser.function.basic.Factorial;
 import ua.org.s4code.intellicalc.analyser.function.basic.Mod;
 import ua.org.s4code.intellicalc.analyser.function.basic.Mul;
 import ua.org.s4code.intellicalc.analyser.function.basic.Sub;
+import ua.org.s4code.intellicalc.analyser.function.power.Log;
 import ua.org.s4code.intellicalc.analyser.function.power.Pow;
 import ua.org.s4code.intellicalc.analyser.function.power.Sqr;
 import ua.org.s4code.intellicalc.analyser.function.power.Sqrt;
@@ -36,6 +37,38 @@ public abstract class Function extends Expression {
         Function func = null;
 
         switch (name) {
+            case "+":
+                func = new Add();
+                break;
+            case "/":
+                func = new Div();
+                break;
+            case "!":
+                func = new Factorial();
+                break;
+            case "%":
+                func = new Mod();
+                break;
+            case "*":
+                func = new Mul();
+                break;
+            case "-":
+                func = new Sub();
+                break;
+            case "log":
+                func = new Log();
+                break;
+            case "^":
+                // fall through
+            case "pow":
+                func = new Pow();
+                break;
+            case "sqr":
+                func = new Sqr();
+                break;
+            case "sqrt":
+                func = new Sqrt();
+                break;
             case "sin":
                 func = new Sinus();
                 break;
@@ -71,33 +104,6 @@ public abstract class Function extends Expression {
                 Cotangent actg = new Cotangent();
                 actg.setInverse(true);
                 func = actg;
-                break;
-            case "sqr":
-                func = new Sqr();
-                break;
-            case "sqrt":
-                func = new Sqrt();
-                break;
-            case "!":
-                func = new Factorial();
-                break;
-            case "^":
-                func = new Pow();
-                break;
-            case "%":
-                func = new Mod();
-                break;
-            case "/":
-                func = new Div();
-                break;
-            case "*":
-                func = new Mul();
-                break;
-            case "+":
-                func = new Add();
-                break;
-            case "-":
-                func = new Sub();
                 break;
             default: // user defined function
                 func = new CustomFunction(name);

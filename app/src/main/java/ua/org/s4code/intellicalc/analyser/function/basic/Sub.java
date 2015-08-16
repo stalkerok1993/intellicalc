@@ -23,9 +23,10 @@ public class Sub extends Function {
                     throw new Exception("There are lack of operands.");
                 default:
                     if (Function.isValues(context, arguments)) {
-                        double acc = 0.0;
-                        for (Expression argument : arguments) {
-                            acc -= ((ValueType) argument.result(context)).getValue(context);
+                        double acc = ((ValueType) arguments.get(0).result(context))
+                                .getValue(context);
+                        for (int i = 1; i < arguments.size(); i++) {
+                            acc -= ((ValueType) arguments.get(i).result(context)).getValue(context);
                         }
 
                         result = new Literal(acc);

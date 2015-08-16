@@ -102,10 +102,18 @@ public abstract class Expression {
                     if (parametersStart >= 0) {
                         String functionName = tempExpr.substring(0, parametersStart);
                         String parameters = tempExpr.substring(parametersStart,
-                                tempExpr.length() - 1);
+                                tempExpr.length());
 
                         Function func = Function.create(functionName);
-                        func.addOperand(Expression.localParse(parameters));
+                        Expression operands = Expression.localParse(parameters);
+                        if (operands instanceof Vector) {
+                            for (int i = 0; i < ((Vector) operands).getLength(); i++) {
+                                Expression operand = ((Vector) operands).getMember(i);
+                                func.addOperand(operand);
+                            }
+                        } else {
+                            func.addOperand(operands);
+                        }
 
                         node = func;
                     } else {
@@ -119,7 +127,6 @@ public abstract class Expression {
 
             if (node == null && isLiteral(tempExpr)) {
                 // literal
-                // TODO: check if numbers as .5 are parsed to double
                 node = new Literal(Double.parseDouble(tempExpr));
             }
         }
@@ -135,6 +142,7 @@ public abstract class Expression {
         OperatorData opData = new OperatorData();
 
         ArrayList<Integer> bracketStack = new ArrayList<>();
+        int lastBracketPos = -1;
         for (int i = 0; i < expression.length(); i++) {
             char current = expression.charAt(i);
 
@@ -144,6 +152,7 @@ public abstract class Expression {
                     if (bracketPairs[t][m] == current) {
                         if (m == 0) { // opened bracket
                             bracketStack.add(t);
+                            lastBracketPos = i;
                         } else { // closed bracket
                             int last = bracketStack.size() - 1;
                             if (last < 0) {
@@ -152,6 +161,10 @@ public abstract class Expression {
                             }
 
                             if (bracketStack.get(last) == t) { // closed bracket of the matched type
+                                if (lastBracketPos + 1 == i) {
+                                    throw new Exception("There are empty brackets.");
+                                }
+
                                 bracketStack.remove(last);
                             } else {
                                 throw new Exception("There are bracket that do not " +
@@ -163,7 +176,7 @@ public abstract class Expression {
             }
 
             if (bracketStack.size() == 0) {
-                if (expression.length() < 2) {
+                if (expression.length() <= 2) {
                     // there is no place for brackets
                     opData.inBrackets = false;
                 }
@@ -252,7 +265,7 @@ public abstract class Expression {
         Expression node = null;
 
         if (expression.indexOf(",") != -1) { // there are separators
-            String[] vectorParts = expression.split(",");
+            String[] vectorParts = removeBrackets(expression).split(",");
 
             Vector vector = new Vector();
             for (int i = 0; i < vectorParts.length; i++) {

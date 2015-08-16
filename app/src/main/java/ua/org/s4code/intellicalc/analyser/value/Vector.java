@@ -33,6 +33,10 @@ public class Vector extends Expression {
         members.add(member);
     }
 
+    public Expression getMember(int index) {
+        return members.get(index);
+    }
+
     public void setMember(int index, Expression member) {
         members.set(index, member);
     }
