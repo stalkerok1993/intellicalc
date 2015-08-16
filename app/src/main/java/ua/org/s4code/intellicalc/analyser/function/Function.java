@@ -17,11 +17,19 @@ import ua.org.s4code.intellicalc.analyser.function.trigonometry.Cosinus;
 import ua.org.s4code.intellicalc.analyser.function.trigonometry.Cotangent;
 import ua.org.s4code.intellicalc.analyser.function.trigonometry.Sinus;
 import ua.org.s4code.intellicalc.analyser.function.trigonometry.Tangent;
+import ua.org.s4code.intellicalc.analyser.value.ValueType;
+import ua.org.s4code.intellicalc.analyser.value.Vector;
 
 /**
  * Created by Serhii on 8/6/2015.
  */
 public abstract class Function extends Expression {
+
+    protected ArrayList<Expression> successors = new ArrayList<>();
+
+    public void addOperand(Expression child) {
+        successors.add(child);
+    }
 
     /** Factory method */
     public static Function create(String name) {
@@ -105,4 +113,30 @@ public abstract class Function extends Expression {
 
     public abstract Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws  Exception;
+
+    public static boolean isValues(ArrayList<Expression> arguments) {
+        boolean isValues = true;
+
+        for (Expression argument : arguments) {
+            if ( !(argument instanceof ValueType) ) {
+                isValues = false;
+                break;
+            }
+        }
+
+        return isValues;
+    }
+
+    public static boolean isVectors(ArrayList<Expression> arguments) {
+        boolean isVectors = true;
+
+        for (Expression argument : arguments) {
+            if ( !(argument instanceof Vector) ) {
+                isVectors = false;
+                break;
+            }
+        }
+
+        return isVectors;
+    }
 }

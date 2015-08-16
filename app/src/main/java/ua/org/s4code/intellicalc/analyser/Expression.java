@@ -11,14 +11,6 @@ import ua.org.s4code.intellicalc.analyser.value.Vector;
  * Created by Serhii on 8/3/2015.
  */
 public abstract class Expression {
-    protected ArrayList<Expression> successors;
-
-    public void Expression() {}
-
-    public void addOperand(Expression child) {
-        successors.add(child);
-    }
-
     public abstract Expression result(ExprContainer context) throws Exception;
 
     /**
@@ -69,6 +61,11 @@ public abstract class Expression {
     private static Expression localParse(String expression) throws Exception {
         String tempExpr = expression.trim();
 
+        if (tempExpr.length() == 0) {
+            throw new Exception("Empty expression found! " +
+                    "Maybe there are an empty bracket pain \"()\"?");
+        }
+
         OperatorData opData = findOperator(tempExpr);
 
         Expression node = null;
@@ -78,14 +75,16 @@ public abstract class Expression {
             node = searchInBrackets(tempExpr);
         }
 
-        if (opData.priority >= 0 && node == null && opData.operator != null) {
+        if (node == null && opData.operator != null) {
             // binary operator found
             String leftOperand = tempExpr.substring(0, opData.place);
             String rightOperand = tempExpr.substring(opData.place + opData.operator.length());
 
-            node = Function.create(opData.operator);
-            node.addOperand(Expression.localParse(leftOperand));
-            node.addOperand(Expression.localParse(rightOperand));
+            Function func = Function.create(opData.operator);
+            func.addOperand(Expression.localParse(leftOperand));
+            func.addOperand(Expression.localParse(rightOperand));
+
+            node = func;
         }
         else {
             // search for unary operators
@@ -100,8 +99,10 @@ public abstract class Expression {
                         String parameters = tempExpr.substring(parametersStart,
                                 tempExpr.length() - 1);
 
-                        node = Function.create(functionName);
-                        node.addOperand(Expression.localParse(parameters));
+                        Function func = Function.create(functionName);
+                        func.addOperand(Expression.localParse(parameters));
+
+                        node = func;
                     }
                     else {
                         throw new Exception("There are no opened bracket for parameters!");
@@ -157,19 +158,26 @@ public abstract class Expression {
                 }
             }
 
-            if (bracketStack.size() == 0 && i > 0 && i < expression.length() - 1) {
-                // not inside the brackets
-                opData.inBrackets = false;
+            if (bracketStack.size() == 0) {
+                if (expression.length() < 2) {
+                    // there is no place for brackets
+                    opData.inBrackets = false;
+                }
 
-                for (int p = 0; p < operators.length; p++) { // search for binary operators
-                    for (int n = 0; n < operators[p].length; n++) {
-                        int opLength = operators[p][n].length();
-                        if (i + opLength <= expression.length() &&
-                                operators[p][n].equals(expression.substring(i, i + opLength)) &&
-                                opData.priority < p) {
-                            opData.priority = p;
-                            opData.operator = operators[p][n];
-                            opData.place = i;
+                if (i > 0 && i < expression.length() - 1) {
+                    opData.inBrackets = false; // not inside the brackets
+
+                    // search for binary operators
+                    for (int p = 0; p < operators.length; p++) {
+                        for (int n = 0; n < operators[p].length; n++) {
+                            int opLength = operators[p][n].length();
+                            if (i + opLength <= expression.length() &&
+                                    operators[p][n].equals(expression.substring(i, i + opLength)) &&
+                                    opData.priority < p) {
+                                opData.priority = p;
+                                opData.operator = operators[p][n];
+                                opData.place = i;
+                            }
                         }
                     }
                 }
@@ -244,7 +252,7 @@ public abstract class Expression {
 
             Vector vector = new Vector();
             for (int i = 0; i < vectorParts.length; i++) {
-                vector.addOperand(Expression.localParse(vectorParts[i]));
+                vector.addMember(Expression.localParse(vectorParts[i]));
             }
 
             node = vector;

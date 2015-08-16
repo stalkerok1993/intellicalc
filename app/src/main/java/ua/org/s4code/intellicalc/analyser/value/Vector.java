@@ -1,5 +1,7 @@
 package ua.org.s4code.intellicalc.analyser.value;
 
+import java.util.ArrayList;
+
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
 
@@ -8,7 +10,9 @@ import ua.org.s4code.intellicalc.analyser.Expression;
  */
 public class Vector extends Expression {
 
-    public Vector() {}
+    public Vector() {
+        members = new ArrayList<>();
+    }
 
     @Override
     public Expression result(ExprContainer context) {
@@ -16,10 +20,21 @@ public class Vector extends Expression {
     }
 
     public Expression result(ExprContainer context, int index) {
-        return successors.get(index);
+        return members.get(index);
     }
 
-    public int length() {
-        return successors.size();
+    public int getLength() {
+        return members.size();
     }
+
+    private ArrayList<Expression> members;
+
+    public void addMember(Expression member) {
+        members.add(member);
+    }
+
+    public void setMember(int index, Expression member) {
+        members.set(index, member);
+    }
+
 }
