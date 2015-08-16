@@ -5,7 +5,10 @@ import java.util.HashMap;
 import ua.org.s4code.intellicalc.analyser.function.Function;
 
 /**
+ * Container for the Expression object and variables and functions, connected with it.
+ *
  * Created by Serhii on 8/4/2015.
+ *
  */
 public class ExprContainer {
 

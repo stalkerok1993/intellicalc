@@ -6,6 +6,8 @@ import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
 
 /**
+ * Representing user-defined function.
+ *
  * Created by Serhii on 8/11/2015.
  */
 public class CustomFunction extends Function {

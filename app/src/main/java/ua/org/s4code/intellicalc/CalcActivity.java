@@ -58,9 +58,6 @@ public class CalcActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.calculate_button) {
-            // DO THE MAGIC TRICK
-            //Toast.makeText(this, "IT'S POINTLESS. CALCULATE IT YOURSELF", Toast.LENGTH_LONG).show();
-
             try {
                 ExprContainer expr = Expression.parse(expressionText.getText().toString());
                 Expression result = expr.getResult();

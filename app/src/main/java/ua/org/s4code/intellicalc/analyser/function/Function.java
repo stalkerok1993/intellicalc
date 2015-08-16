@@ -22,6 +22,9 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
 import ua.org.s4code.intellicalc.analyser.value.Vector;
 
 /**
+ * Factory method for all child classes.
+ * Base class for all nodes of expression tree, that can contain successors.
+ *
  * Created by Serhii on 8/6/2015.
  */
 public abstract class Function extends Expression {

@@ -8,19 +8,22 @@ import ua.org.s4code.intellicalc.analyser.value.Variable;
 import ua.org.s4code.intellicalc.analyser.value.Vector;
 
 /**
+ * Base class for all elements in expression tree.
+ *
  * Created by Serhii on 8/3/2015.
  */
 public abstract class Expression {
 
     protected Expression cachedValue = null;
 
+    /** Used for retrieving equation result with tree traversal. */
     public abstract Expression result(ExprContainer context) throws Exception;
 
     /**
      * Parse math expression into equation tree.
      *
      * @param expression string representation of the math equation.
-     * @return root element of the expression tree.
+     * @return container with expression tree.
      */
     public static ExprContainer parse(String expression) throws  Exception {
         ExprContainer context = new ExprContainer(expression, Expression.localParse(expression));
