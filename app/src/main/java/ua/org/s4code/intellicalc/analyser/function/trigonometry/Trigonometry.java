@@ -7,20 +7,25 @@ import ua.org.s4code.intellicalc.analyser.function.Function;
  */
 public abstract class Trigonometry extends Function {
 
+    private static final double PI = 3.14;
+
     public enum AngleGrade {
         DEGREES, RADIANS
     }
 
-    private AngleGrade grade = AngleGrade.RADIANS;
+    protected AngleGrade grade = AngleGrade.RADIANS;
 
     public void setGrade(AngleGrade grade) {
         this.grade = grade;
     }
 
-    private boolean inverse = false;
+    protected boolean inverse = false;
 
     public void setInverse(boolean inverse) {
         this.inverse = inverse;
     }
 
+    protected static double toRadians(double degrees) {
+        return PI * degrees / 180.0;
+    }
 }
