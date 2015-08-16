@@ -241,6 +241,7 @@ public abstract class Expression {
                 String unaryOp = prefixOperators[i];
 
                 node = Function.create(unaryOp);
+                // suffix operator has bigger priority!
                 node.addOperand(Expression.localParse(expression.substring(unaryOp.length())));
                 break;
             }

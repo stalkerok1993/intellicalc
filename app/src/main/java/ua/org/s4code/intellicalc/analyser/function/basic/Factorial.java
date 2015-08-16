@@ -47,12 +47,13 @@ public class Factorial extends Function {
 
     private static double fct(long op) {
         if (op < 0) {
-            throw new IllegalArgumentException("op MUST be a positive integer or zero.");
+            throw new IllegalArgumentException(
+                    "Operand for factorial must be a positive integer or zero.");
         }
 
         long result = 1;
 
-        for (int i = 1; i < op; result *= i++);
+        for (int i = 2; i <= op; result *= i++);
 
         return result;
     }
