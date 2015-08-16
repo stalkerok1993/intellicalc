@@ -9,11 +9,16 @@ import ua.org.s4code.intellicalc.analyser.function.Function;
  */
 public class ExprContainer {
 
+    private String expression;
+
     private HashMap<String, Double> variables;
 
-    public ExprContainer() {
+    public ExprContainer(String expression, Expression expressionRoot) {
         variables = new HashMap<>();
         functions = new HashMap<>();
+
+        this.expression = expression;
+        root = expressionRoot;
     }
 
     public void addVariable(String name, double value) {
@@ -32,10 +37,6 @@ public class ExprContainer {
     }
 
     private Expression root;
-
-    public void setRoot(Expression root) {
-        this.root = root;
-    }
 
     public Expression getRoot() {
         return root;
@@ -60,5 +61,10 @@ public class ExprContainer {
 
     public Expression getResult() throws Exception {
         return root.result(this);
+    }
+
+    @Override
+    public String toString() {
+        return expression;
     }
 }

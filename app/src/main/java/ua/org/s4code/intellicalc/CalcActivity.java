@@ -7,18 +7,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
 import ua.org.s4code.intellicalc.analyser.value.Literal;
-import ua.org.s4code.intellicalc.analyser.value.ValueType;
 
 
 public class CalcActivity extends Activity implements View.OnClickListener{
 
     Button btnCalc;
-    EditText editText;
+    EditText expressionText;
+    TextView resultView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,9 @@ public class CalcActivity extends Activity implements View.OnClickListener{
         btnCalc = (Button) findViewById(R.id.calculateButton);
         btnCalc.setOnClickListener(this);
 
-        editText = (EditText) findViewById(R.id.expr_input);
+        expressionText = (EditText) findViewById(R.id.expr_input);
+
+        resultView = (TextView) findViewById(R.id.result_view);
     }
 
     @Override
@@ -57,18 +60,18 @@ public class CalcActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         if (v.getId() == R.id.calculateButton) {
             // DO THE MAGIC TRICK
-            // "IT'S POINTLESS. CALCULATE IT YOURSELF"
-            Toast.makeText(this, editText.getText(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "IT'S POINTLESS. CALCULATE IT YOURSELF", Toast.LENGTH_LONG).show();
 
             try {
-                ExprContainer expr = Expression.parse(editText.getText().toString());
+                ExprContainer expr = Expression.parse(expressionText.getText().toString());
                 Expression result = expr.getResult();
 
                 if (result instanceof Literal) {
-                    Toast.makeText(this, Double.toString(((Literal) result).getValue()), Toast.LENGTH_LONG).show();
+                    resultView.setText(String.format("%s =\n%f", expr.toString(),
+                            ((Literal) result).getValue()));
                 }
             } catch (Exception exception) {
-                Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                resultView.setText(String.format("Exception:\n%s", exception.getMessage()));
             }
         }
     }

@@ -23,9 +23,7 @@ public abstract class Expression {
      * @return root element of the expression tree.
      */
     public static ExprContainer parse(String expression) throws  Exception {
-        ExprContainer context = new ExprContainer();
-
-        context.setRoot(Expression.localParse(expression));
+        ExprContainer context = new ExprContainer(expression, Expression.localParse(expression));
 
         return context;
     }
@@ -156,8 +154,7 @@ public abstract class Expression {
                         } else { // closed bracket
                             int last = bracketStack.size() - 1;
                             if (last < 0) {
-                                throw new Exception("There are the closed bracket " +
-                                        "without a pair");
+                                throw new Exception("There is a closed bracket without a pair.");
                             }
 
                             if (bracketStack.get(last) == t) { // closed bracket of the matched type
