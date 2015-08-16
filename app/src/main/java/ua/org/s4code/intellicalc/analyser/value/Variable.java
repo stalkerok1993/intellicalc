@@ -23,14 +23,14 @@ public class Variable extends ValueType {
     }
 
     @Override
-    public double getValue(ExprContainer context) {
+    public double getValue(ExprContainer context) throws Exception {
         double res = 0.0;
 
         try {
             res = context.getVariable(name);
         }
         catch (Exception exception) {
-            // TODO: Log an exception
+            throw new Exception("There are no such variable in context.");
         }
 
         return res;
