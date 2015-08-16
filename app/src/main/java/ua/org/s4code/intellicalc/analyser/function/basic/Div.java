@@ -13,25 +13,33 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
  */
 public class Div extends Function {
     @Override
-    public Expression count(ExprContainer context, ArrayList<Expression> arguments) throws Exception {
+    public Expression count(ExprContainer context, ArrayList<Expression> arguments)
+            throws Exception {
         Expression result = null;
 
-        switch (arguments.size()) {
-            case 0:
-                // fall through
-            case 1:
-                throw new Exception("There are lack of operands.");
-            default:
-                if (Function.isValues(arguments)) {
-                    double acc = ((ValueType) arguments.get(0)).getValue(context);
-                    for (int i = 1; i < arguments.size(); i++) {
-                        acc /= ((ValueType) arguments.get(i)).getValue(context);
-                    }
+        if (cachedValue == null) {
+            switch (arguments.size()) {
+                case 0:
+                    // fall through
+                case 1:
+                    throw new Exception("There are lack of operands.");
+                default:
+                    if (Function.isValues(context, arguments)) {
+                        double acc = ((ValueType) arguments.get(0).result(context))
+                                .getValue(context);
+                        for (int i = 1; i < arguments.size(); i++) {
+                            acc /= ((ValueType) arguments.get(i).result(context)).getValue(context);
+                        }
 
-                    result = new Literal(acc);
-                } else {
-                    throw new Exception("Type of arguments is not permitted.");
-                }
+                        result = new Literal(acc);
+                    } else {
+                        throw new Exception("Type of arguments is not permitted.");
+                    }
+            }
+
+            cachedValue = result;
+        } else {
+            result = cachedValue;
         }
 
         return result;

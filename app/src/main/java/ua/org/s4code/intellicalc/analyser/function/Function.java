@@ -114,11 +114,11 @@ public abstract class Function extends Expression {
     public abstract Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws  Exception;
 
-    public static boolean isValues(ArrayList<Expression> arguments) {
+    public static boolean isValues(ExprContainer context, ArrayList<Expression> arguments) throws Exception {
         boolean isValues = true;
 
         for (Expression argument : arguments) {
-            if ( !(argument instanceof ValueType) ) {
+            if ( !(argument.result(context) instanceof ValueType) ) {
                 isValues = false;
                 break;
             }
@@ -127,11 +127,11 @@ public abstract class Function extends Expression {
         return isValues;
     }
 
-    public static boolean isVectors(ArrayList<Expression> arguments) {
+    public static boolean isVectors(ExprContainer context, ArrayList<Expression> arguments) throws Exception {
         boolean isVectors = true;
 
         for (Expression argument : arguments) {
-            if ( !(argument instanceof Vector) ) {
+            if ( !(argument.result(context) instanceof Vector) ) {
                 isVectors = false;
                 break;
             }

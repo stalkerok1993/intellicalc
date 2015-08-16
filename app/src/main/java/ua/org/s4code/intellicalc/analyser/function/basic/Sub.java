@@ -13,23 +13,30 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
  */
 public class Sub extends Function {
     @Override
-    public Expression count(ExprContainer context, ArrayList<Expression> arguments) throws Exception {
+    public Expression count(ExprContainer context, ArrayList<Expression> arguments)
+            throws Exception {
         Expression result = null;
 
-        switch (arguments.size()) {
-            case 0:
-                throw new Exception("There are lack of operands.");
-            default:
-                if (Function.isValues(arguments)) {
-                    double acc = 0.0;
-                    for (Expression argument : arguments) {
-                        acc -= ((ValueType) argument).getValue(context);
-                    }
+        if (cachedValue == null) {
+            switch (arguments.size()) {
+                case 0:
+                    throw new Exception("There are lack of operands.");
+                default:
+                    if (Function.isValues(context, arguments)) {
+                        double acc = 0.0;
+                        for (Expression argument : arguments) {
+                            acc -= ((ValueType) argument.result(context)).getValue(context);
+                        }
 
-                    result = new Literal(acc);
-                } else {
-                    throw new Exception("Type of arguments is not permitted.");
-                }
+                        result = new Literal(acc);
+                    } else {
+                        throw new Exception("Type of arguments is not permitted.");
+                    }
+            }
+
+            cachedValue = result;
+        } else {
+            result = cachedValue;
         }
 
         return result;

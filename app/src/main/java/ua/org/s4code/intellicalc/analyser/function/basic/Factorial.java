@@ -14,24 +14,32 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
  */
 public class Factorial extends Function {
     @Override
-    public Expression count(ExprContainer context, ArrayList<Expression> arguments) throws Exception {
+    public Expression count(ExprContainer context, ArrayList<Expression> arguments)
+            throws Exception {
         Expression result = null;
 
-        switch (arguments.size()) {
-            case 0:
-                throw new Exception("There are lack of operands.");
-            case 1:
-                if (Function.isValues(arguments)) {
-                    double acc = ((ValueType) arguments.get(0)).getValue(context);
-                    acc = fct(((long) acc));
+        if (cachedValue == null) {
+            switch (arguments.size()) {
+                case 0:
+                    throw new Exception("There are lack of operands.");
+                case 1:
+                    if (Function.isValues(context, arguments)) {
+                        double num = ((ValueType) arguments.get(0).result(context))
+                                .getValue(context);
+                        double res = fct(((long) num));
 
-                    result = new Literal(acc);
-                } else {
-                    throw new Exception("Type of arguments is not permitted.");
-                }
-                break;
-            default:
-                throw new Exception("Too many operands.");
+                        result = new Literal(res);
+                    } else {
+                        throw new Exception("Type of arguments is not permitted.");
+                    }
+                    break;
+                default:
+                    throw new Exception("Too many operands.");
+            }
+
+            cachedValue = result;
+        } else {
+            result = cachedValue;
         }
 
         return result;

@@ -11,6 +11,9 @@ import ua.org.s4code.intellicalc.analyser.value.Vector;
  * Created by Serhii on 8/3/2015.
  */
 public abstract class Expression {
+
+    protected Expression cachedValue = null;
+
     public abstract Expression result(ExprContainer context) throws Exception;
 
     /**
@@ -73,26 +76,28 @@ public abstract class Expression {
         if (opData.inBrackets) {
             // brackets (vector or just expression in brackets)
             node = searchInBrackets(tempExpr);
-        }
+        } else if (opData.operator != null) {
+            if (node == null) {
+                // binary operator found
+                String leftOperand = tempExpr.substring(0, opData.place);
+                String rightOperand = tempExpr.substring(opData.place + opData.operator.length());
 
-        if (node == null && opData.operator != null) {
-            // binary operator found
-            String leftOperand = tempExpr.substring(0, opData.place);
-            String rightOperand = tempExpr.substring(opData.place + opData.operator.length());
+                Function func = Function.create(opData.operator);
+                func.addOperand(Expression.localParse(leftOperand));
+                func.addOperand(Expression.localParse(rightOperand));
 
-            Function func = Function.create(opData.operator);
-            func.addOperand(Expression.localParse(leftOperand));
-            func.addOperand(Expression.localParse(rightOperand));
+                node = func;
+            }
+        } else {
+            if (node == null) {
+                // search for unary operators
+                node = searchUnary(tempExpr);
+            }
 
-            node = func;
-        }
-        else {
-            // search for unary operators
-            node = searchUnary(tempExpr);
-
-            // variable or function
             if (node == null && isName(tempExpr)) {
-                if (isClosingBracket(tempExpr.charAt(tempExpr.length() - 1))) { // function
+                // variable or function
+                if (isClosingBracket(tempExpr.charAt(tempExpr.length() - 1))) {
+                    // function
                     int parametersStart = tempExpr.indexOf('(');
                     if (parametersStart >= 0) {
                         String functionName = tempExpr.substring(0, parametersStart);
@@ -103,18 +108,17 @@ public abstract class Expression {
                         func.addOperand(Expression.localParse(parameters));
 
                         node = func;
-                    }
-                    else {
+                    } else {
                         throw new Exception("There are no opened bracket for parameters!");
                     }
-                }
-                else { // getVariable
+                } else {
+                    // variable
                     node = new Variable(tempExpr);
                 }
             }
 
-            // literal
             if (node == null && isLiteral(tempExpr)) {
+                // literal
                 // TODO: check if numbers as .5 are parsed to double
                 node = new Literal(Double.parseDouble(tempExpr));
             }
@@ -261,7 +265,7 @@ public abstract class Expression {
             node = Expression.localParse(removeBrackets(expression));
         }
 
-        return null;
+        return node;
     }
 
     private static String removeBrackets(String expression) {
