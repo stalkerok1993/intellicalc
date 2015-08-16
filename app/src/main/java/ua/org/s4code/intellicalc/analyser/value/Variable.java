@@ -31,7 +31,7 @@ public class Variable extends ValueType {
             res = context.getVariable(name);
         }
         catch (Exception exception) {
-            throw new ExprException(startPos, endPos, "There are no such variable in context.");
+            throw new ExprException(startPos, endPos, "There is no such variable in context.");
         }
 
         return res;

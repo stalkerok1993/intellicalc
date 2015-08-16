@@ -72,14 +72,13 @@ public abstract class Expression {
         int positionEnd = position;
 
         if (tempExpr.length() == 0) {
-            if (tempExpr.length() > 0) {
-                positionEnd++;
+            if (expression.length() > 0) {
+                positionEnd = position + expression.length() + 1;
             }
             if (positionStart > 0) {
                 positionStart--;
             }
-            throw new ExprException(positionStart, positionEnd, "Empty expression found! " +
-                    "Maybe there are an empty bracket pain \"()\"?");
+            throw new ExprException(positionStart, positionEnd, "There is an expression part.");
         }
 
         OperatorData opData = findOperator(tempExpr, position);
