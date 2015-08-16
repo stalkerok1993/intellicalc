@@ -9,8 +9,6 @@ import ua.org.s4code.intellicalc.analyser.function.Function;
  */
 public abstract class Trigonometry extends Function {
 
-    private static final double PI = 3.14;
-
     public enum AngleGrade {
         DEGREES, RADIANS
     }
@@ -34,6 +32,6 @@ public abstract class Trigonometry extends Function {
     }
 
     protected static double toRadians(double degrees) {
-        return PI * degrees / 180.0;
+        return Math.PI * degrees / 180.0;
     }
 }
