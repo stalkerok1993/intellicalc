@@ -65,6 +65,30 @@ public abstract class Expression {
         }
     }
 
+    /**
+     * Expression builds using next rules:
+     *
+     * expression = expression | value | function
+     *
+     * function = operator | method
+     * method = name vector
+     * name = [\w_]+
+     * vector = ( expression[, expression...] )
+     *
+     * value = variable | literal
+     * variable = name
+     * literal = [\d]*{.}+[\d]*
+     *
+     * operator = prefix | suffix | binary
+     * prefix = operator expression
+     * suffix = expression operator
+     * binary = expression operator expression
+     *
+     * @param expression part of math equation
+     * @param position position of given part in equation
+     * @return tree, representing equation part
+     * @throws ExprException if there are some troubles with equation
+     */
     private static Expression localParse(String expression, int position) throws ExprException {
         String tempExpr = expression.trim();
         int positionStart = position;
