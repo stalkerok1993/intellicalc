@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
@@ -26,10 +25,10 @@ public class CalcActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calc);
 
-        btnCalc = (Button) findViewById(R.id.calculateButton);
-        btnCalc.setOnClickListener(this);
-
         expressionText = (EditText) findViewById(R.id.expr_input);
+
+        btnCalc = (Button) findViewById(R.id.calculate_button);
+        btnCalc.setOnClickListener(this);
 
         resultView = (TextView) findViewById(R.id.result_view);
     }
@@ -58,7 +57,7 @@ public class CalcActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.calculateButton) {
+        if (v.getId() == R.id.calculate_button) {
             // DO THE MAGIC TRICK
             //Toast.makeText(this, "IT'S POINTLESS. CALCULATE IT YOURSELF", Toast.LENGTH_LONG).show();
 

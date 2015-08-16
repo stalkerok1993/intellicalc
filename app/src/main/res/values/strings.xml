@@ -4,4 +4,5 @@
     <string name="action_settings">Settings</string>
     <string name="calculate_button">Calculate</string>
     <string name="expression_hint">Write expression here...</string>
+    <string name="result_here">expression result will be here...</string>
 </resources>
