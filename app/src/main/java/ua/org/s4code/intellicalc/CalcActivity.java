@@ -66,8 +66,6 @@ public class CalcActivity extends Activity implements View.OnClickListener{
                     resultView.setText(String.format("%s =\n%f", expr.toString(),
                             ((Literal) result).getValue()));
                 }
-
-                expressionText.setSelection(1, 5);
             } catch (Exception exception) {
                 resultView.setText(String.format("Exception:\n%s", exception.getMessage()));
             }

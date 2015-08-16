@@ -21,6 +21,16 @@ public class Sub extends Function {
             switch (arguments.size()) {
                 case 0:
                     throw new Exception("There are lack of operands.");
+                case 1:
+                    if (Function.isValues(context, arguments)) {
+                        double num = ((ValueType) arguments.get(0).result(context))
+                                .getValue(context);
+
+                        result = new Literal(-num);
+                    } else {
+                        throw new Exception("Type of arguments is not permitted.");
+                    }
+                    break;
                 default:
                     if (Function.isValues(context, arguments)) {
                         double acc = ((ValueType) arguments.get(0).result(context))
