@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.value.Literal;
+import ua.org.s4code.intellicalc.analyser.value.ValueType;
 
 
 public class CalcActivity extends Activity implements View.OnClickListener{
@@ -61,6 +63,10 @@ public class CalcActivity extends Activity implements View.OnClickListener{
             try {
                 ExprContainer expr = Expression.parse(editText.getText().toString());
                 Expression result = expr.getResult();
+
+                if (result instanceof Literal) {
+                    Toast.makeText(this, Double.toString(((Literal) result).getValue()), Toast.LENGTH_LONG).show();
+                }
             } catch (Exception exception) {
                 Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }

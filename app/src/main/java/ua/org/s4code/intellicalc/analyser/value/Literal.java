@@ -21,6 +21,10 @@ public class Literal extends ValueType {
 
     @Override
     public double getValue(ExprContainer context) {
+        return getValue();
+    }
+
+    public double getValue() {
         return value;
     }
 }
