@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.function.Function;
 import ua.org.s4code.intellicalc.analyser.value.Literal;
 import ua.org.s4code.intellicalc.analyser.value.ValueType;
@@ -15,13 +16,13 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
 public class Factorial extends Function {
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
-            throws Exception {
+            throws ExprException {
         Expression result = null;
 
         if (cachedValue == null) {
             switch (arguments.size()) {
                 case 0:
-                    throw new Exception("There are lack of operands.");
+                    throw new ExprException(startPos, endPos, "There are lack of operands.");
                 case 1:
                     if (Function.isValues(context, arguments)) {
                         double num = ((ValueType) arguments.get(0).result(context))
@@ -30,11 +31,11 @@ public class Factorial extends Function {
 
                         result = new Literal(res);
                     } else {
-                        throw new Exception("Type of arguments is not permitted.");
+                        throw new ExprException(startPos, endPos, "Type of arguments is not permitted.");
                     }
                     break;
                 default:
-                    throw new Exception("Too many operands.");
+                    throw new ExprException(startPos, endPos, "Too many operands.");
             }
 
             cachedValue = result;

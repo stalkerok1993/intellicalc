@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 
 /**
  * Created by Serhii on 8/8/2015.
@@ -19,8 +20,8 @@ public class Vector extends Expression {
         return this;
     }
 
-    public Expression result(ExprContainer context, int index) {
-        return members.get(index);
+    public Expression result(ExprContainer context, int index) throws ExprException {
+        return members.get(index).result(context);
     }
 
     public int getLength() {

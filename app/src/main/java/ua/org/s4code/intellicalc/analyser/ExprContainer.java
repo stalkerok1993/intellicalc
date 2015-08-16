@@ -2,6 +2,7 @@ package ua.org.s4code.intellicalc.analyser;
 
 import java.util.HashMap;
 
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.function.Function;
 
 /**
@@ -51,18 +52,18 @@ public class ExprContainer {
         functions.put(name, function);
     }
 
-    public Function getFunction(String name) throws Exception {
+    public Function getFunction(String name) throws ExprException {
         Function function = functions.get(name);
 
         if (function == null) {
-            throw new Exception(
+            throw new ExprException(0, 0,
                     String.format("There is no getVariable with name '%s' in given context!", name));
         }
 
         return function;
     }
 
-    public Expression getResult() throws Exception {
+    public Expression getResult() throws ExprException {
         return root.result(this);
     }
 

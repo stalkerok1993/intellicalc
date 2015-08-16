@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.function.basic.Add;
 import ua.org.s4code.intellicalc.analyser.function.basic.Div;
 import ua.org.s4code.intellicalc.analyser.function.basic.Factorial;
@@ -28,6 +29,9 @@ import ua.org.s4code.intellicalc.analyser.value.Vector;
  * Created by Serhii on 8/6/2015.
  */
 public abstract class Function extends Expression {
+
+    public abstract Expression count(ExprContainer context, ArrayList<Expression> arguments)
+            throws  ExprException;
 
     protected ArrayList<Expression> successors = new ArrayList<>();
 
@@ -116,14 +120,12 @@ public abstract class Function extends Expression {
     }
 
     @Override
-    public Expression result(ExprContainer context) throws Exception {
+    public Expression result(ExprContainer context) throws ExprException {
         return this.count(context, successors);
     }
 
-    public abstract Expression count(ExprContainer context, ArrayList<Expression> arguments)
-            throws  Exception;
-
-    public static boolean isValues(ExprContainer context, ArrayList<Expression> arguments) throws Exception {
+    public static boolean isValues(ExprContainer context, ArrayList<Expression> arguments)
+            throws ExprException {
         boolean isValues = true;
 
         for (Expression argument : arguments) {
@@ -148,4 +150,5 @@ public abstract class Function extends Expression {
 
         return isVectors;
     }
+
 }

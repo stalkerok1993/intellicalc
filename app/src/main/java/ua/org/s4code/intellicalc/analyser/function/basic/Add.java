@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.function.Function;
 import ua.org.s4code.intellicalc.analyser.value.Literal;
 import ua.org.s4code.intellicalc.analyser.value.ValueType;
@@ -14,13 +15,13 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
 public class Add extends Function {
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
-            throws Exception {
+            throws ExprException {
         Expression result = null;
 
         if (cachedValue == null) {
             switch (arguments.size()) {
                 case 0:
-                    throw new Exception("There are lack of operands.");
+                    throw new ExprException(startPos, endPos, "There are lack of operands.");
                 default:
                     if (Function.isValues(context, arguments)) {
                         double acc = 0.0;
@@ -30,7 +31,7 @@ public class Add extends Function {
 
                         result = new Literal(acc);
                     } else {
-                        throw new Exception("Type of arguments is not permitted.");
+                        throw new ExprException(startPos, endPos, "Type of arguments is not permitted.");
                     }
             }
 

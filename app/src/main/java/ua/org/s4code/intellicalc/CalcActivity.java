@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.value.Literal;
 
 
@@ -66,7 +67,9 @@ public class CalcActivity extends Activity implements View.OnClickListener{
                     resultView.setText(String.format("%s =\n%f", expr.toString(),
                             ((Literal) result).getValue()));
                 }
-            } catch (Exception exception) {
+            } catch (ExprException exception) {
+                expressionText.setSelection(exception.selectionStart(), exception.selectionEnd());
+
                 resultView.setText(String.format("Exception:\n%s", exception.getMessage()));
             }
         }

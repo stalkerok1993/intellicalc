@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 
 /**
  * Representing user-defined function.
@@ -20,7 +21,7 @@ public class CustomFunction extends Function {
 
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
-            throws Exception {
+            throws ExprException {
         Function func = context.getFunction(name);
         Expression result = func.count(context, arguments);
 
