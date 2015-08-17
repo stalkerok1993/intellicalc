@@ -1,1 +1,17 @@
-This calc is smarter than you faggot.
+Small calculator with syntax analyser.
+
+You can use:
+ - unary operators: 
+   - prefix: +, -
+   - suffix (has bigger priority then prefix): !
+ - binary operators: +, -, *, /, %(mod), ^(pow)
+ - functions: log(base, number), pow(number, power), sqr(number), sqrt(number), sin(angle), asin(angle), cos(angle), acos(angle), tg(angle), atg(angle), ctg(angle), actg(angle)
+ - bracket pairs:
+   - (, )
+   - [, ]
+   - {, }
+
+Just write expression in EditText and press CALCULATE. 
+If there are some troubles with expression you will see description and area with problem will be highlighted.
+
+Thank You!
