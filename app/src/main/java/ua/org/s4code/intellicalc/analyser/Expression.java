@@ -1,7 +1,5 @@
 package ua.org.s4code.intellicalc.analyser;
 
-import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
@@ -65,6 +63,30 @@ public abstract class Expression {
         }
     }
 
+    private static class EmptyExpressionPosition {
+        public int positionStart;
+        public int positionEnd;
+        public int currentPosition;
+
+        public EmptyExpressionPosition(int position, int trimmedExprStart, int exprLength) {
+            currentPosition = position;
+            positionStart = position - trimmedExprStart;
+            positionEnd = position + exprLength;
+
+            tryHighlightBrackets(exprLength);
+        }
+
+        public void tryHighlightBrackets(int exprLength) {
+            if (exprLength > 0) {
+                positionEnd = currentPosition + exprLength + 1;
+            }
+
+            if (positionStart > 0) {
+                positionStart--;
+            }
+        }
+    }
+
     /**
      * Expression builds using next rules:
      *
@@ -91,18 +113,15 @@ public abstract class Expression {
      */
     private static Expression localParse(String expression, int position) throws ExprException {
         String tempExpr = expression.trim();
-        int positionStart = position;
-        position += expression.indexOf(tempExpr);
-        int positionEnd = position;
+
+        int trimmedExprStart = expression.indexOf(tempExpr);
+        position += position + trimmedExprStart;
 
         if (tempExpr.length() == 0) {
-            if (expression.length() > 0) {
-                positionEnd = position + expression.length() + 1;
-            }
-            if (positionStart > 0) {
-                positionStart--;
-            }
-            throw new ExprException(positionStart, positionEnd, "There is an expression part.");
+            EmptyExpressionPosition textPos = new EmptyExpressionPosition(position,
+                    trimmedExprStart, expression.length());
+            throw new ExprException(textPos.positionStart, textPos.positionEnd,
+                    "There is an expression part.");
         }
 
         OperatorData opData = findOperator(tempExpr, position);
@@ -115,18 +134,7 @@ public abstract class Expression {
         } else if (opData.operator != null) {
             if (node == null) {
                 // binary operator found
-                String leftOperand = tempExpr.substring(0, opData.place);
-                Expression leftOperandExpr = Expression.localParse(leftOperand, position);
-
-                int rightOpPlace = opData.place + opData.operator.length();
-                String rightOperand = tempExpr.substring(rightOpPlace);
-                Expression rightOperandExpr = Expression.localParse(rightOperand, position + rightOpPlace);
-
-                Function func = Function.create(opData.operator);
-                func.addOperand(leftOperandExpr);
-                func.addOperand(rightOperandExpr);
-
-                node = func;
+                node = getBinaryOperator(tempExpr, opData, position);
             }
         } else {
             if (node == null) {
@@ -138,29 +146,7 @@ public abstract class Expression {
                 // variable or function
                 if (isClosingBracket(tempExpr.charAt(tempExpr.length() - 1))) {
                     // function
-                    int parametersStart = tempExpr.indexOf('(');
-                    if (parametersStart >= 0) {
-                        String functionName = tempExpr.substring(0, parametersStart);
-                        String parameters = tempExpr.substring(parametersStart,
-                                tempExpr.length());
-
-                        Function func = Function.create(functionName);
-                        Expression operands = Expression.localParse(parameters,
-                                position + parametersStart);
-                        if (operands instanceof Vector) {
-                            for (int i = 0; i < ((Vector) operands).getLength(); i++) {
-                                Expression operand = ((Vector) operands).getMember(i);
-                                func.addOperand(operand);
-                            }
-                        } else {
-                            func.addOperand(operands);
-                        }
-
-                        node = func;
-                    } else {
-                        throw new ExprException(position, position + tempExpr.length(),
-                                "There are no opened bracket for parameters!");
-                    }
+                    node = getFunction(expression, position);
                 } else {
                     // variable
                     node = new Variable(tempExpr);
@@ -188,7 +174,7 @@ public abstract class Expression {
         }
         else {
             throw new ExprException(position, position + tempExpr.length(),
-                    "There is some unexpected logic.");
+                    "There is some unexpected logic. Expression part not parsed to object.");
         }
 
         return node;
@@ -198,51 +184,119 @@ public abstract class Expression {
      * for the next functions string parameters MUST be trimmed
      */
 
-    private static OperatorData findOperator(String expression, int position) throws ExprException {
-        OperatorData opData = new OperatorData();
+    private static Function getFunction(String expr, int position) throws ExprException {
+        Function node = null;
 
+        int parametersStart = expr.indexOf('(');
+        if (parametersStart >= 0) {
+            String functionName = expr.substring(0, parametersStart);
+            String parameters = expr.substring(parametersStart, expr.length());
+
+            Function func = Function.create(functionName);
+            Expression operands = Expression.localParse(parameters,
+                    position + parametersStart);
+            if (operands instanceof Vector) {
+                for (int i = 0; i < ((Vector) operands).getLength(); i++) {
+                    Expression operand = ((Vector) operands).getMember(i);
+                    func.addOperand(operand);
+                }
+            } else {
+                func.addOperand(operands);
+            }
+
+            node = func;
+        } else {
+            throw new ExprException(position, position + expr.length(),
+                    "There are no opened bracket for parameters!");
+        }
+
+        return node;
+    }
+
+    private static Function getBinaryOperator(String expr, OperatorData opData, int position)
+            throws ExprException {
+        String leftOperand = expr.substring(0, opData.place);
+        Expression leftOperandExpr = Expression.localParse(leftOperand, position);
+
+        int rightOpPlace = opData.place + opData.operator.length();
+        String rightOperand = expr.substring(rightOpPlace);
+        Expression rightOperandExpr = Expression.localParse(rightOperand,
+                position + rightOpPlace);
+
+        Function func = Function.create(opData.operator);
+        func.addOperand(leftOperandExpr);
+        func.addOperand(rightOperandExpr);
+
+        return func;
+    }
+
+    private static class BracketsInfo {
         // used to mark position in text where exception is
-        int lastBracketPos = -1;
-        int firstBracketPos = -1;
+        private int lastBracketPos = -1;
+        private int firstBracketPos = -1;
 
-        ArrayList<Integer> bracketStack = new ArrayList<>();
-        for (int i = 0; i < expression.length(); i++) {
-            char current = expression.charAt(i);
+        private ArrayList<Integer> bracketStack = new ArrayList<>();
 
-            // do not search in brackets
+        public int lastBracket() {
+            return lastBracketPos;
+        }
+
+        public int firstBracketPos() {
+            return firstBracketPos;
+        }
+
+        public int bracketStackSize() {
+            return bracketStack.size();
+        }
+
+        public void nextChar(char character, int index, int position) throws ExprException {
             for (int t = 0; t < bracketPairs.length; t++) {
                 for (int m = 0; m < bracketPairs[t].length; m++) {
-                    if (bracketPairs[t][m] == current) {
+                    if (bracketPairs[t][m] == character) {
                         if (m == 0) { // opened bracket
                             if (bracketStack.size() == 0) {
-                                firstBracketPos = i;
+                                firstBracketPos = index;
                             }
                             bracketStack.add(t);
-                            lastBracketPos = i;
+                            lastBracketPos = index;
                         } else { // closed bracket
                             int last = bracketStack.size() - 1;
                             if (last < 0) {
-                                throw new ExprException(position + i, position + i + 1,
+                                throw new ExprException(position + index, position + index + 1,
                                         "There is the closed bracket without a pair.");
                             }
 
                             if (bracketStack.get(last) == t) { // closed bracket of a matched type
-                                if (lastBracketPos + 1 == i) {
+                                if (lastBracketPos + 1 == index) {
                                     throw new ExprException(position + lastBracketPos,
-                                            position + i + 1, "There is the empty brackets.");
+                                            position + index + 1, "There is the empty brackets.");
                                 }
 
                                 bracketStack.remove(last);
                             } else {
-                                throw new ExprException(position + lastBracketPos, position + i + 1,
+                                throw new ExprException(position + lastBracketPos,
+                                        position + index + 1,
                                         "There is the bracket that do not match previous bracket.");
                             }
                         }
                     }
                 }
             }
+        }
 
-            if (bracketStack.size() == 0) {
+    }
+
+    private static OperatorData findOperator(String expression, int position) throws ExprException {
+        OperatorData opData = new OperatorData();
+        BracketsInfo bracketsInfo = new BracketsInfo();
+
+        for (int i = 0; i < expression.length(); i++) {
+            char current = expression.charAt(i);
+
+            // do not search in brackets
+            bracketsInfo.nextChar(current, i, position);
+
+            if (bracketsInfo.bracketStackSize() == 0) {
                 if (expression.length() <= 2) {
                     // when there is no place for brackets
                     opData.inBrackets = false;
@@ -269,8 +323,8 @@ public abstract class Expression {
             // else start next iteration to find bracket pair
         }
 
-        if (bracketStack.size() != 0) {
-            int bracketPos = position + firstBracketPos;
+        if (bracketsInfo.bracketStackSize() != 0) {
+            int bracketPos = position + bracketsInfo.firstBracketPos();
             // there is no possibility (in general) to find the bracket
             throw new ExprException(bracketPos, bracketPos + 1,
                     "There is the bracket without a pair.");

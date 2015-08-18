@@ -68,9 +68,12 @@ public class CalcActivity extends Activity implements View.OnClickListener{
                             ((Literal) result).getValue()));
                 }
             } catch (ExprException exception) {
-                expressionText.setSelection(exception.selectionStart(), exception.selectionEnd());
+                exception.selectText(expressionText);
 
                 resultView.setText(String.format("Exception:\n%s", exception.getMessage()));
+            }
+            catch (Exception exception) {
+                resultView.setText(String.format("General exception:\n%s", exception.getMessage()));
             }
         }
     }
