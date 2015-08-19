@@ -27,4 +27,11 @@ public class Literal extends ValueType {
     public double getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        String result = Double.toString(value);
+        return result;
+    }
+
 }

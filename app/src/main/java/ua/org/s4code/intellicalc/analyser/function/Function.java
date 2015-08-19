@@ -151,4 +151,10 @@ public abstract class Function extends Expression {
         return isVectors;
     }
 
+    @Override
+    public String toString() {
+        String result = expressionString;
+        return result;
+    }
+
 }

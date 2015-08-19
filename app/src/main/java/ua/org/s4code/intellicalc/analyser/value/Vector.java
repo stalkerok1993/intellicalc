@@ -42,4 +42,21 @@ public class Vector extends Expression {
         members.set(index, member);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("(");
+
+        int count = 0;
+        for (Expression member : members) {
+            result.append(member.toString());
+
+            if (++count < members.size()) {
+                result.append(", ");
+            } else {
+                result.append(")");
+            }
+        }
+
+        return result.toString();
+    }
 }

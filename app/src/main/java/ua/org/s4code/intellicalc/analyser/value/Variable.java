@@ -29,11 +29,25 @@ public class Variable extends ValueType {
 
         try {
             res = context.getVariable(name);
+            cachedValue = new Literal(res);
         }
         catch (Exception exception) {
             throw new ExprException(startPos, endPos, "There is no such variable in context.");
         }
 
         return res;
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+
+        if (cachedValue != null) {
+            result = cachedValue.toString();
+        } else {
+            result = expressionString;
+        }
+
+        return result;
     }
 }

@@ -63,10 +63,7 @@ public class CalcActivity extends Activity implements View.OnClickListener{
                 ExprContainer expr = Expression.parse(expressionText.getText().toString());
                 Expression result = expr.getResult();
 
-                if (result instanceof Literal) {
-                    resultView.setText(String.format("%s =\n%f", expr.toString(),
-                            ((Literal) result).getValue()));
-                }
+                resultView.setText(String.format("%s =\n%s", expr.toString(), result.toString()));
             } catch (ExprException exception) {
                 exception.selectText(expressionText);
 

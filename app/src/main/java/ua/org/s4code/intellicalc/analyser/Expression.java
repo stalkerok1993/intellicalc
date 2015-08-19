@@ -17,6 +17,10 @@ public abstract class Expression {
 
     protected Expression cachedValue = null;
 
+    protected String expressionString = "";
+    protected int startPos = 0;
+    protected int endPos = 0;
+
     /** Used for retrieving equation result with tree traversal. */
     public abstract Expression result(ExprContainer context) throws ExprException;
 
@@ -169,8 +173,9 @@ public abstract class Expression {
         }
 
         if (node != null) {
-            node.setStartPos(position);
-            node.setEndPos(position + tempExpr.length());
+            node.startPos = position;
+            node.endPos = position + tempExpr.length();
+            node.expressionString = expression;
         }
         else {
             throw new ExprException(position, position + tempExpr.length(),
@@ -415,15 +420,17 @@ public abstract class Expression {
         return  expression.substring(1, expression.length() - 1);
     }
 
+    @Override
+    public String toString() {
+        String result = "";
 
-    protected int startPos = 0;
-    protected int endPos = 0;
+        if (cachedValue != null) {
+            result = cachedValue.toString();
+        }
+        else {
+            result = expressionString;
+        }
 
-    public void setStartPos(int start) {
-        startPos = start;
-    }
-
-    public void setEndPos(int end) {
-        endPos = end;
+        return result;
     }
 }
