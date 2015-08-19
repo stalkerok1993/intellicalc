@@ -45,6 +45,7 @@ public class ExprException extends Exception {
             localStart = localEnd;
         }
 
+        editText.clearFocus(); // give an ability to select text
         editText.setSelection(localStart, localEnd);
     }
 

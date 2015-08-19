@@ -115,7 +115,7 @@ public abstract class Expression {
         String tempExpr = expression.trim();
 
         int trimmedExprStart = expression.indexOf(tempExpr);
-        position += position + trimmedExprStart;
+        position += trimmedExprStart;
 
         if (tempExpr.length() == 0) {
             EmptyExpressionPosition textPos = new EmptyExpressionPosition(position,
