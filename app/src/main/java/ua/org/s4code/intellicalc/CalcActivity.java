@@ -63,6 +63,8 @@ public class CalcActivity extends Activity implements View.OnClickListener{
                 ExprContainer expr = Expression.parse(expressionText.getText().toString());
                 Expression result = expr.getResult();
 
+                // TODO: Add values to some list in application, not in text box
+                // TODO: Made clickable buttons for elements (on click expression is loaded to EditText again
                 resultView.setText(String.format("%s =\n%s", expr.toString(), result.toString()));
             } catch (ExprException exception) {
                 exception.selectText(expressionText);
