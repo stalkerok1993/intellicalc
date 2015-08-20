@@ -27,15 +27,15 @@ public class Cosinus extends Trigonometry {
                         double angle = ((ValueType) arguments.get(0).result(context))
                                 .getValue(context);
                         double res = 0.0;
-                        if (!this.inverse) {
-                            if (this.grade == AngleGrade.RADIANS) {
+                        if (!this.isInverse()) {
+                            if (this.getGrade() == AngleGrade.RADIANS) {
                                 res = Math.cos(angle);
                             } else {
                                 res = Math.cos(Trigonometry.toRadians(angle));
                             }
                         }
                         else {
-                            if (this.grade == AngleGrade.RADIANS) {
+                            if (this.getGrade() == AngleGrade.RADIANS) {
                                 res = Math.acos(angle);
                             } else {
                                 res = Math.acos(Trigonometry.toRadians(angle));

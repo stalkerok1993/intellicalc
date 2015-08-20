@@ -32,6 +32,8 @@ public class Vector extends Expression {
 
     public void addMember(Expression member) {
         members.add(member);
+
+        invalidateCache();
     }
 
     public Expression getMember(int index) {
@@ -40,6 +42,8 @@ public class Vector extends Expression {
 
     public void setMember(int index, Expression member) {
         members.set(index, member);
+
+        invalidateCache();
     }
 
     @Override

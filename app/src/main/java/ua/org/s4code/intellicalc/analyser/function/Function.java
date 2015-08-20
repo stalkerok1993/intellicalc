@@ -37,6 +37,8 @@ public abstract class Function extends Expression {
 
     public void addOperand(Expression child) {
         successors.add(child);
+
+        invalidateCache();
     }
 
     /** Factory method */

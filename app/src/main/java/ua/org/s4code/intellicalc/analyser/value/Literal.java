@@ -19,6 +19,12 @@ public class Literal extends ValueType {
         return this;
     }
 
+    public void setValue(double value) {
+        this.value = value;
+
+        invalidateCache();
+    }
+
     @Override
     public double getValue(ExprContainer context) {
         return getValue();

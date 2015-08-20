@@ -13,22 +13,34 @@ public abstract class Trigonometry extends Function {
         DEGREES, RADIANS
     }
 
-    protected AngleGrade grade = AngleGrade.RADIANS;
+    private AngleGrade grade = AngleGrade.RADIANS;
 
     /**
      * Point which units used to represent angle.
      */
-    public void setGrade(AngleGrade grade) {
+    public final void setGrade(AngleGrade grade) {
         this.grade = grade;
+
+        invalidateCache();
     }
 
-    protected boolean inverse = false;
+    public final AngleGrade getGrade() {
+        return grade;
+    }
+
+    private boolean inverse = false;
 
     /**
      * If true then class represents inverse function.
      */
-    public void setInverse(boolean inverse) {
+    public final void setInverse(boolean inverse) {
         this.inverse = inverse;
+
+        invalidateCache();
+    }
+
+    public final boolean isInverse() {
+        return inverse;
     }
 
     protected static double toRadians(double degrees) {

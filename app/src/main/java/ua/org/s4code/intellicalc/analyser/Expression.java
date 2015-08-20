@@ -15,7 +15,9 @@ import ua.org.s4code.intellicalc.analyser.value.Vector;
  */
 public abstract class Expression {
 
+    // TODO: add propagateChanges() methos and link to parent node for handling changes
     protected Expression cachedValue = null;
+    private Expression parent = null;
 
     protected String expressionString = "";
     protected int startPos = 0;
@@ -31,12 +33,14 @@ public abstract class Expression {
      * @return container with expression tree.
      */
     public static ExprContainer parse(String expression) throws ExprException {
-        ExprContainer context = new ExprContainer(expression, Expression.localParse(expression, 0));
+        ExprContainer context = new ExprContainer(expression,
+                Expression.localParse(expression, 0, null));
 
         return context;
     }
 
     // binary operations, placed by priority (less index - bigger priority)
+    // unary prefix operators had bigger priority
     private static String[][] operators = new String[][] {
             { "^" },
             { "*", "/", "%" },
@@ -115,7 +119,7 @@ public abstract class Expression {
      * @return tree, representing equation part
      * @throws ExprException if there are some troubles with equation
      */
-    private static Expression localParse(String expression, int position) throws ExprException {
+    private static Expression localParse(String expression, int position, Expression parent) throws ExprException {
         String tempExpr = expression.trim();
 
         int trimmedExprStart = expression.indexOf(tempExpr);
@@ -134,7 +138,7 @@ public abstract class Expression {
 
         if (opData.inBrackets) {
             // brackets (vector or just expression in brackets)
-            node = searchInBrackets(tempExpr, position);
+            node = searchInBrackets(tempExpr, position, parent);
         } else if (opData.operator != null) {
             if (node == null) {
                 // binary operator found
@@ -150,7 +154,7 @@ public abstract class Expression {
                 // variable or function
                 if (isClosingBracket(tempExpr.charAt(tempExpr.length() - 1))) {
                     // function
-                    node = getFunction(expression, position);
+                    node = getFunction(expression, position, parent);
                 } else {
                     // variable
                     node = new Variable(tempExpr);
@@ -176,6 +180,7 @@ public abstract class Expression {
             node.startPos = position;
             node.endPos = position + tempExpr.length();
             node.expressionString = expression;
+            node.parent = parent;
         }
         else {
             throw new ExprException(position, position + tempExpr.length(),
@@ -189,7 +194,7 @@ public abstract class Expression {
      * for the next functions string parameters MUST be trimmed
      */
 
-    private static Function getFunction(String expr, int position) throws ExprException {
+    private static Function getFunction(String expr, int position, Expression parent) throws ExprException {
         Function node = null;
 
         int parametersStart = expr.indexOf('(');
@@ -199,10 +204,11 @@ public abstract class Expression {
 
             Function func = Function.create(functionName);
             Expression operands = Expression.localParse(parameters,
-                    position + parametersStart);
+                    position + parametersStart, func);
             if (operands instanceof Vector) {
                 for (int i = 0; i < ((Vector) operands).getLength(); i++) {
                     Expression operand = ((Vector) operands).getMember(i);
+                    operand.parent = func; // for elements in vector parent is Vector object
                     func.addOperand(operand);
                 }
             } else {
@@ -220,15 +226,16 @@ public abstract class Expression {
 
     private static Function getBinaryOperator(String expr, OperatorData opData, int position)
             throws ExprException {
+        Function func = Function.create(opData.operator);
+
         String leftOperand = expr.substring(0, opData.place);
-        Expression leftOperandExpr = Expression.localParse(leftOperand, position);
+        Expression leftOperandExpr = Expression.localParse(leftOperand, position, func);
 
         int rightOpPlace = opData.place + opData.operator.length();
         String rightOperand = expr.substring(rightOpPlace);
         Expression rightOperandExpr = Expression.localParse(rightOperand,
-                position + rightOpPlace);
+                position + rightOpPlace, func);
 
-        Function func = Function.create(opData.operator);
         func.addOperand(leftOperandExpr);
         func.addOperand(rightOperandExpr);
 
@@ -372,7 +379,7 @@ public abstract class Expression {
                 node = Function.create(unaryOp);
                 // suffix operator has bigger priority!
                 node.addOperand(Expression.localParse(expression.substring(unaryOp.length()),
-                        position + unaryOp.length()));
+                        position + unaryOp.length(), node));
                 break;
             }
         }
@@ -385,7 +392,7 @@ public abstract class Expression {
                     int operatorEnd = expression.length() - unaryOp.length();
                     node.addOperand(Expression.localParse(
                             expression.substring(0, expression.length() - unaryOp.length()),
-                            position + operatorEnd));
+                            position + operatorEnd, node));
                     break;
                 }
             }
@@ -394,7 +401,8 @@ public abstract class Expression {
         return node;
     }
 
-    private static Expression searchInBrackets(String expression, int position) throws ExprException {
+    private static Expression searchInBrackets(String expression, int position, Expression parent)
+            throws ExprException {
         Expression node = null;
         int localPosition = position + 1;
 
@@ -403,14 +411,14 @@ public abstract class Expression {
 
             Vector vector = new Vector();
             for (int i = 0; i < vectorParts.length; i++) {
-                vector.addMember(Expression.localParse(vectorParts[i], localPosition));
+                vector.addMember(Expression.localParse(vectorParts[i], localPosition, vector));
                 localPosition += vectorParts[i].length() + 1;
             }
 
             node = vector;
         }
         else {
-            node = Expression.localParse(removeBrackets(expression), localPosition);
+            node = Expression.localParse(removeBrackets(expression), localPosition, parent);
         }
 
         return node;
@@ -432,5 +440,13 @@ public abstract class Expression {
         }
 
         return result;
+    }
+
+    protected final void invalidateCache() {
+        cachedValue = null;
+
+        if (parent != null) {
+            parent.invalidateCache();
+        }
     }
 }

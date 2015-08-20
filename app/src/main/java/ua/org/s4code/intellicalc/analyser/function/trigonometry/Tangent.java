@@ -27,15 +27,15 @@ public class Tangent extends Trigonometry {
                         double angle = ((ValueType) arguments.get(0).result(context))
                                 .getValue(context);
                         double res = 0.0;
-                        if (!this.inverse) {
-                            if (this.grade == AngleGrade.RADIANS) {
+                        if (!this.isInverse()) {
+                            if (this.getGrade() == AngleGrade.RADIANS) {
                                 res = Math.tan(angle);
                             } else {
                                 res = Math.tan(Trigonometry.toRadians(angle));
                             }
                         }
                         else {
-                            if (this.grade == AngleGrade.RADIANS) {
+                            if (this.getGrade() == AngleGrade.RADIANS) {
                                 res = Math.tan(angle);
                             } else {
                                 res = Math.tan(Trigonometry.toRadians(angle));
