@@ -1,9 +1,12 @@
 package ua.org.s4code.intellicalc.analyser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
+import ua.org.s4code.intellicalc.analyser.function.CustomFunction;
 import ua.org.s4code.intellicalc.analyser.function.Function;
+import ua.org.s4code.intellicalc.analyser.value.Variable;
 
 /**
  * Container for the Expression object and variables and functions, connected with it.
@@ -11,7 +14,7 @@ import ua.org.s4code.intellicalc.analyser.function.Function;
  * Created by Serhii on 8/4/2015.
  *
  */
-public class ExprContainer {
+public class ExprContainer implements ExprTraversalHandler {
 
     private String expression;
 
@@ -22,7 +25,7 @@ public class ExprContainer {
         functions = new HashMap<>();
 
         this.expression = expression;
-        root = expressionRoot;
+        setRoot(expressionRoot);
     }
 
     public void addVariable(String name, double value) {
@@ -41,6 +44,12 @@ public class ExprContainer {
     }
 
     private Expression root;
+
+    public void setRoot(Expression expressionRoot) {
+        root = expressionRoot;
+
+        extractVariableData();
+    }
 
     public Expression getRoot() {
         return root;
@@ -71,4 +80,31 @@ public class ExprContainer {
     public String toString() {
         return expression;
     }
+
+    private ArrayList<Variable> exprVariables;
+    private ArrayList<CustomFunction> exprFunctions;
+
+    private void extractVariableData() {
+        if (root != null) {
+            exprVariables = new ArrayList<Variable>();
+            exprFunctions = new ArrayList<CustomFunction>();
+
+            if (root instanceof Function) {
+                ((Function) root).preOrderTraversal(this);
+            }
+            else {
+                traversalHandle(root);
+            }
+        }
+    }
+
+    @Override
+    public void traversalHandle(Expression node) {
+        if (node instanceof Variable) {
+            exprVariables.add((Variable) node);
+        } else if (node instanceof CustomFunction) {
+            exprFunctions.add((CustomFunction) node);
+        }
+    }
+
 }

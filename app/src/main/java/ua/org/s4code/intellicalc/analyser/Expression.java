@@ -442,7 +442,7 @@ public abstract class Expression {
         return result;
     }
 
-    protected final void invalidateCache() {
+    public final void invalidateCache() {
         cachedValue = null;
 
         if (parent != null) {

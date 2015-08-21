@@ -3,6 +3,7 @@ package ua.org.s4code.intellicalc.analyser.function;
 import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
+import ua.org.s4code.intellicalc.analyser.ExprTraversalHandler;
 import ua.org.s4code.intellicalc.analyser.Expression;
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.function.basic.Add;
@@ -157,6 +158,18 @@ public abstract class Function extends Expression {
     public String toString() {
         String result = expressionString;
         return result;
+    }
+
+    public final void preOrderTraversal(ExprTraversalHandler handler) {
+        handler.traversalHandle(this);
+
+        for (Expression successor : successors) {
+            if (successor instanceof Function) {
+                ((Function) successor).preOrderTraversal(handler);
+            } else {
+                handler.traversalHandle(successor);
+            }
+        }
     }
 
 }
