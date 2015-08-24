@@ -29,13 +29,12 @@ public class Add extends Function {
                             acc += ((ValueType) argument.result(context)).getValue(context);
                         }
 
-                        result = new Literal(acc);
+                        cachedValue = new Literal(acc);
+                        result = cachedValue;
                     } else {
                         throw new ExprException(startPos, endPos, "Type of arguments is not permitted.");
                     }
             }
-
-            cachedValue = result;
         } else {
             result = cachedValue;
         }

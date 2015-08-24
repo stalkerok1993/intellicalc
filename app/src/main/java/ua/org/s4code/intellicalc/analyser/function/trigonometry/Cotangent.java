@@ -42,7 +42,8 @@ public class Cotangent extends Trigonometry {
                             }
                         }
 
-                        result = new Literal(1 / res);
+                        cachedValue = new Literal(1 / res);
+                        result = cachedValue;
                     } else {
                         throw new ExprException(startPos, endPos,
                                 "Type of arguments is not permitted.");
@@ -51,8 +52,6 @@ public class Cotangent extends Trigonometry {
                 default:
                     throw new ExprException(startPos, endPos, "Too many parameters!");
             }
-
-            cachedValue = result;
         } else {
             result = cachedValue;
         }

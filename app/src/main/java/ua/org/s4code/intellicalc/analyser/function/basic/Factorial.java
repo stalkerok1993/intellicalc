@@ -29,7 +29,8 @@ public class Factorial extends Function {
                                 .getValue(context);
                         double res = fct(((long) num));
 
-                        result = new Literal(res);
+                        cachedValue = new Literal(res);
+                        result = cachedValue;
                     } else {
                         throw new ExprException(startPos, endPos, "Type of arguments is not permitted.");
                     }
@@ -37,8 +38,6 @@ public class Factorial extends Function {
                 default:
                     throw new ExprException(startPos, endPos, "Too many operands.");
             }
-
-            cachedValue = result;
         } else {
             result = cachedValue;
         }

@@ -19,8 +19,12 @@ public class Variable extends ValueType {
         this.name = name;
     }
 
-    public Expression result(ExprContainer context) {
-        return this;
+    public Expression result(ExprContainer context) throws ExprException {
+        return new Literal(this.getValue(context));
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -28,11 +32,16 @@ public class Variable extends ValueType {
         double res = 0.0;
 
         try {
-            res = context.getVariable(name);
-            cachedValue = new Literal(res);
-        }
-        catch (Exception exception) {
-            throw new ExprException(startPos, endPos, "There is no such variable in context.");
+            if (cachedValue == null) {
+                res = context.getVariable(name);
+                cachedValue = new Literal(res);
+            } else {
+                res = cachedValue.getValue();
+            }
+        } catch (ExprException ex) {
+            ExprException newEx = new ExprException(startPos, endPos, ex.getMessage());
+            newEx.initCause(ex);
+            throw newEx;
         }
 
         return res;

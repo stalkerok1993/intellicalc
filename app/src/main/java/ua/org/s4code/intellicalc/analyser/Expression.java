@@ -15,8 +15,7 @@ import ua.org.s4code.intellicalc.analyser.value.Vector;
  */
 public abstract class Expression {
 
-    // TODO: add propagateChanges() methos and link to parent node for handling changes
-    protected Expression cachedValue = null;
+    protected Literal cachedValue = null;
     private Expression parent = null;
 
     protected String expressionString = "";
@@ -119,7 +118,8 @@ public abstract class Expression {
      * @return tree, representing equation part
      * @throws ExprException if there are some troubles with equation
      */
-    private static Expression localParse(String expression, int position, Expression parent) throws ExprException {
+    private static Expression localParse(String expression, int position, Expression parent)
+            throws ExprException {
         String tempExpr = expression.trim();
 
         int trimmedExprStart = expression.indexOf(tempExpr);

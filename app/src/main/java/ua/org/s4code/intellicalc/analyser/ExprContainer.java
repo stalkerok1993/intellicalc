@@ -30,14 +30,21 @@ public class ExprContainer implements ExprTraversalHandler {
 
     public void addVariable(String name, double value) {
         variables.put(name, value);
+
+        Expression exprVariable = exprVariables.get(name);
+        if (exprVariable != null) {
+            exprVariable.invalidateCache();
+        }
     }
 
-    public double getVariable(String name) throws Exception {
+    public double getVariable(String name) throws ExprException {
         Double value = variables.get(name);
 
         if (value == null) {
-            throw new Exception(
-                    String.format("There is no getVariable with name '%s' in given context!", name));
+            Expression exprVariable = exprVariables.get(name);
+            throw new ExprException(exprVariable.startPos, exprVariable.endPos,
+                    String.format("There is no getVariable with name '%s' in given context!",
+                            name));
         }
 
         return value;
@@ -59,6 +66,11 @@ public class ExprContainer implements ExprTraversalHandler {
 
     public void addFunction(String name, Function function) throws Exception {
         functions.put(name, function);
+
+        CustomFunction func = exprFunctions.get(name);
+        if (func != null) {
+            func.invalidateCache();
+        }
     }
 
     public Function getFunction(String name) throws ExprException {
@@ -66,7 +78,7 @@ public class ExprContainer implements ExprTraversalHandler {
 
         if (function == null) {
             throw new ExprException(0, 0,
-                    String.format("There is no getVariable with name '%s' in given context!", name));
+                    String.format("There is no function with name '%s' in given context!", name));
         }
 
         return function;
@@ -81,13 +93,13 @@ public class ExprContainer implements ExprTraversalHandler {
         return expression;
     }
 
-    private ArrayList<Variable> exprVariables;
-    private ArrayList<CustomFunction> exprFunctions;
+    private HashMap<String, Variable> exprVariables;
+    private HashMap<String, CustomFunction> exprFunctions;
 
     private void extractVariableData() {
         if (root != null) {
-            exprVariables = new ArrayList<Variable>();
-            exprFunctions = new ArrayList<CustomFunction>();
+            exprVariables = new HashMap<>();
+            exprFunctions = new HashMap<>();
 
             if (root instanceof Function) {
                 ((Function) root).preOrderTraversal(this);
@@ -101,9 +113,11 @@ public class ExprContainer implements ExprTraversalHandler {
     @Override
     public void traversalHandle(Expression node) {
         if (node instanceof Variable) {
-            exprVariables.add((Variable) node);
+            Variable var = (Variable) node;
+            exprVariables.put(var.getName(), var);
         } else if (node instanceof CustomFunction) {
-            exprFunctions.add((CustomFunction) node);
+            CustomFunction func = (CustomFunction) node;
+            exprFunctions.put(func.getName(), func);
         }
     }
 

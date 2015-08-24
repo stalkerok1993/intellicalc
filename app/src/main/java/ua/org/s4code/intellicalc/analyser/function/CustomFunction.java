@@ -19,12 +19,20 @@ public class CustomFunction extends Function {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws ExprException {
-        Function func = context.getFunction(name);
-        Expression result = func.count(context, arguments);
-
-        return result;
+        try {
+            Function func = context.getFunction(name);
+            return func.count(context, arguments);
+        } catch (ExprException ex) {
+            ExprException newEx = new ExprException(startPos, endPos, ex.getMessage());
+            newEx.initCause(ex);
+            throw newEx;
+        }
     }
 }
