@@ -15,7 +15,9 @@ public class CustomFunction extends Function {
 
     private String name;
 
-    public CustomFunction(String name) {
+    public CustomFunction(String expression, String name) {
+        super(expression);
+
         this.name = name;
     }
 
@@ -27,7 +29,7 @@ public class CustomFunction extends Function {
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws ExprException {
         try {
-            Function func = context.getFunction(name);
+            Function func = context.getFunction(this);
             return func.count(context, arguments);
         } catch (ExprException ex) {
             ExprException newEx = new ExprException(startPos, endPos, ex.getMessage());

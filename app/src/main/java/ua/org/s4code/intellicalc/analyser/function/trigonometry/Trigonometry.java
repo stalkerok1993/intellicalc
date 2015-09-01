@@ -9,11 +9,28 @@ import ua.org.s4code.intellicalc.analyser.function.Function;
  */
 public abstract class Trigonometry extends Function {
 
+    protected Trigonometry(String expression, boolean inverse, AngleGrade grade) {
+        super(expression);
+
+        this.inverse = inverse;
+        this.grade = grade;
+    }
+
+    protected Trigonometry(String expression, boolean inverse) {
+        this(expression, inverse, DEFAULT_GRADE);
+    }
+
+    protected Trigonometry(String expression) {
+        this(expression, false, DEFAULT_GRADE);
+    }
+
     public enum AngleGrade {
         DEGREES, RADIANS
     }
 
-    private AngleGrade grade = AngleGrade.RADIANS;
+    public static final AngleGrade DEFAULT_GRADE = AngleGrade.RADIANS;
+
+    private AngleGrade grade = DEFAULT_GRADE;
 
     /**
      * Point which units used to represent angle.
@@ -33,17 +50,17 @@ public abstract class Trigonometry extends Function {
     /**
      * If true then class represents inverse function.
      */
-    public final void setInverse(boolean inverse) {
+    /*public final void setInverse(boolean inverse) {
         this.inverse = inverse;
 
         invalidateCache();
-    }
+    }*/
 
     public final boolean isInverse() {
         return inverse;
     }
 
-    protected static double toRadians(double degrees) {
+    protected static final double toRadians(double degrees) {
         return Math.PI * degrees / 180.0;
     }
 }

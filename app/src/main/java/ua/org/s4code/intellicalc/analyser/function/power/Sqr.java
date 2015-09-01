@@ -13,6 +13,11 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
  * Created by Serhii on 8/6/2015.
  */
 public class Sqr extends Function {
+
+    public Sqr(String expression) {
+        super(expression);
+    }
+
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws ExprException {
@@ -43,4 +48,5 @@ public class Sqr extends Function {
 
         return result;
     }
+
 }

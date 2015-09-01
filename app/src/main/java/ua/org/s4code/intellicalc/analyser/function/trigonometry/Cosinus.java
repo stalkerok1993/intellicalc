@@ -13,6 +13,19 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
  * Created by Serhii on 8/6/2015.
  */
 public class Cosinus extends Trigonometry {
+
+    public Cosinus(String expression, boolean inverse, AngleGrade grade) {
+        super(expression, inverse, grade);
+    }
+
+    public Cosinus(String expression, boolean inverse) {
+        super(expression, inverse);
+    }
+
+    public Cosinus(String expression) {
+        super(expression);
+    }
+
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws ExprException {
@@ -58,4 +71,5 @@ public class Cosinus extends Trigonometry {
 
         return result;
     }
+
 }

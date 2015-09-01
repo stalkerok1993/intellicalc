@@ -11,7 +11,9 @@ import ua.org.s4code.intellicalc.analyser.exception.ExprException;
  */
 public class Vector extends Expression {
 
-    public Vector() {
+    public Vector(String expression) {
+        super(expression);
+
         members = new ArrayList<>();
     }
 

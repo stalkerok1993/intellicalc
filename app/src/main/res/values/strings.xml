@@ -5,4 +5,6 @@
     <string name="calculate_button">Calculate</string>
     <string name="expression_hint">Write expression here...</string>
     <string name="result_here">expression result will be here...</string>
+    <string name="default_list_element" />
+    <string name="load_expression_text">/\\</string>
 </resources>

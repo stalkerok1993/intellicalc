@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
-import ua.org.s4code.intellicalc.analyser.value.Literal;
 
 
 public class CalcActivity extends Activity implements View.OnClickListener{
@@ -20,18 +23,29 @@ public class CalcActivity extends Activity implements View.OnClickListener{
     Button btnCalc;
     EditText expressionText;
     TextView resultView;
+    ArrayList<ExprContainer> expressions;
+    ArrayAdapter<ExprContainer> exprAdapter;
+    ListView exprView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calc);
 
-        expressionText = (EditText) findViewById(R.id.expr_input);
+        expressions = new ArrayList<>();
 
-        btnCalc = (Button) findViewById(R.id.calculate_button);
+        expressionText = (EditText) findViewById(R.id.exprInput);
+
+        btnCalc = (Button) findViewById(R.id.calculateButton);
         btnCalc.setOnClickListener(this);
 
-        resultView = (TextView) findViewById(R.id.result_view);
+        resultView = (TextView) findViewById(R.id.expressionView);
+
+        exprAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                expressions);
+
+        exprView = (ListView) findViewById(R.id.exprListView);
+        exprView.setAdapter(exprAdapter);
     }
 
     @Override
@@ -58,14 +72,16 @@ public class CalcActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.calculate_button) {
+        if (v.getId() == R.id.calculateButton) {
             try {
                 ExprContainer expr = Expression.parse(expressionText.getText().toString());
                 Expression result = expr.getResult();
 
-                // TODO: Add values to some list in application, not in text box
                 // TODO: Made clickable buttons for elements (on click expression is loaded to EditText again
                 resultView.setText(String.format("%s =\n%s", expr.toString(), result.toString()));
+
+                expressions.add(expr);
+                exprAdapter.notifyDataSetChanged();
             } catch (ExprException exception) {
                 exception.selectText(expressionText);
 

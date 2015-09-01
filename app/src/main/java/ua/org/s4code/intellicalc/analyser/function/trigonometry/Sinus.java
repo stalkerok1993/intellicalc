@@ -13,6 +13,19 @@ import ua.org.s4code.intellicalc.analyser.value.ValueType;
  * Created by Serhii on 8/6/2015.
  */
 public class Sinus extends Trigonometry {
+
+    public Sinus(String expression, boolean inverse, AngleGrade grade) {
+        super(expression, inverse, grade);
+    }
+
+    public Sinus(String expression, boolean inverse) {
+        super(expression, inverse);
+    }
+
+    public Sinus(String expression) {
+        super(expression);
+    }
+
     @Override
     public Expression count(ExprContainer context, ArrayList<Expression> arguments)
             throws ExprException {
@@ -58,4 +71,5 @@ public class Sinus extends Trigonometry {
 
         return result;
     }
+
 }

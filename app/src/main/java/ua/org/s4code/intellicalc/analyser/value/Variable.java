@@ -12,6 +12,8 @@ public class Variable extends ValueType {
     String name;
 
     public Variable(String name) {
+        super(name);
+
         if (name == null) {
             throw new NullPointerException("Variable name can not be null.");
         }
@@ -33,7 +35,7 @@ public class Variable extends ValueType {
 
         try {
             if (cachedValue == null) {
-                res = context.getVariable(name);
+                res = context.getVariable(this);
                 cachedValue = new Literal(res);
             } else {
                 res = cachedValue.getValue();

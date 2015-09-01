@@ -11,6 +11,12 @@ public class Literal extends ValueType {
     double value;
 
     public Literal(double value) {
+        this(Double.toString(value), value);
+    }
+
+    public Literal(String expression, double value) {
+        super(expression);
+
         this.value = value;
     }
 

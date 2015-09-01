@@ -20,6 +20,7 @@ import ua.org.s4code.intellicalc.analyser.function.trigonometry.Cosinus;
 import ua.org.s4code.intellicalc.analyser.function.trigonometry.Cotangent;
 import ua.org.s4code.intellicalc.analyser.function.trigonometry.Sinus;
 import ua.org.s4code.intellicalc.analyser.function.trigonometry.Tangent;
+import ua.org.s4code.intellicalc.analyser.function.trigonometry.Trigonometry;
 import ua.org.s4code.intellicalc.analyser.value.ValueType;
 import ua.org.s4code.intellicalc.analyser.value.Vector;
 
@@ -42,81 +43,81 @@ public abstract class Function extends Expression {
         invalidateCache();
     }
 
+    public Function(String expression) {
+        super(expression);
+    }
+
     /** Factory method */
-    public static Function create(String name) {
+    public static Function create(String expression, String name, Trigonometry.AngleGrade grade) {
         Function func = null;
 
         switch (name) {
             case "+":
-                func = new Add();
+                func = new Add(expression);
                 break;
             case "/":
-                func = new Div();
+                func = new Div(expression);
                 break;
             case "!":
-                func = new Factorial();
+                func = new Factorial(expression);
                 break;
             case "%":
-                func = new Mod();
+                func = new Mod(expression);
                 break;
             case "*":
-                func = new Mul();
+                func = new Mul(expression);
                 break;
             case "-":
-                func = new Sub();
+                func = new Sub(expression);
                 break;
             case "log":
-                func = new Log();
+                func = new Log(expression);
                 break;
             case "^":
                 // fall through
             case "pow":
-                func = new Pow();
+                func = new Pow(expression);
                 break;
             case "sqr":
-                func = new Sqr();
+                func = new Sqr(expression);
                 break;
             case "sqrt":
-                func = new Sqrt();
+                func = new Sqrt(expression);
                 break;
             case "sin":
-                func = new Sinus();
+                func = new Sinus(expression);
                 break;
             case "asin":
-                Sinus asin = new Sinus();
-                asin.setInverse(true);
+                Sinus asin = new Sinus(expression, true, grade);
                 func = asin;
                 break;
             case "cos":
-                func = new Cosinus();
+                func = new Cosinus(expression);
                 break;
             case "acos":
-                Cosinus acos = new Cosinus();
-                acos.setInverse(true);
+                Cosinus acos = new Cosinus(expression, true, grade);
                 func = acos;
                 break;
             case "tg":
                 // fall through
             case "tan":
-                func = new Tangent();
+                func = new Tangent(expression);
                 break;
             case "atg":
                 // fall through
             case "atan":
-                Tangent atg = new Tangent();
-                atg.setInverse(true);
+                Tangent atg = new Tangent(expression, true, grade);
                 func = atg;
                 break;
             case "ctg":
-                func = new Cotangent();
+                func = new Cotangent(expression);
                 break;
             case "actg":
-                Cotangent actg = new Cotangent();
-                actg.setInverse(true);
+                Cotangent actg = new Cotangent(expression, true, grade);
                 func = actg;
                 break;
             default: // user defined function
-                func = new CustomFunction(name);
+                func = new CustomFunction(name, expression);
         }
 
         return func;
