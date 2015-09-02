@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
+import ua.org.s4code.intellicalc.ui.list.ExprListAdapter;
 
 
 public class CalcActivity extends Activity implements View.OnClickListener{
@@ -24,7 +25,7 @@ public class CalcActivity extends Activity implements View.OnClickListener{
     EditText expressionText;
     TextView resultView;
     ArrayList<ExprContainer> expressions;
-    ArrayAdapter<ExprContainer> exprAdapter;
+    ExprListAdapter exprAdapter;
     ListView exprView;
 
     @Override
@@ -41,10 +42,8 @@ public class CalcActivity extends Activity implements View.OnClickListener{
 
         resultView = (TextView) findViewById(R.id.expressionView);
 
-        exprAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                expressions);
-
         exprView = (ListView) findViewById(R.id.exprListView);
+        exprAdapter = new ExprListAdapter(this, exprView, expressions);
         exprView.setAdapter(exprAdapter);
     }
 
@@ -75,12 +74,12 @@ public class CalcActivity extends Activity implements View.OnClickListener{
         if (v.getId() == R.id.calculateButton) {
             try {
                 ExprContainer expr = Expression.parse(expressionText.getText().toString());
-                Expression result = expr.getResult();
+                // Expression result = expr.getResult();
 
                 // TODO: Made clickable buttons for elements (on click expression is loaded to EditText again
-                resultView.setText(String.format("%s =\n%s", expr.toString(), result.toString()));
+                // resultView.setText(String.format("%s =\n%s", expr.toString(), result.toString()));
 
-                expressions.add(expr);
+                expressions.add(0, expr);
                 exprAdapter.notifyDataSetChanged();
             } catch (ExprException exception) {
                 exception.selectText(expressionText);
