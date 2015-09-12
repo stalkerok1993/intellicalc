@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="@string/load_expression_text"
+        android:id="@+id/buttonLoad"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="@string/default_list_element"
+        android:id="@+id/exprView"
+        android:longClickable="false"
+        android:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:textIsSelectable="false"
+        android:theme="@style/AppTheme" />
+
+</RelativeLayout>

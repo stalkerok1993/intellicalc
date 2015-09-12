@@ -7,4 +7,7 @@
     <string name="result_here">expression result will be here...</string>
     <string name="default_list_element" />
     <string name="load_expression_text">/\\</string>
+    <string name="expr_clear">C</string>
+    <string name="options_button_text">O</string>
+    <string name="button_text_calculate">Calculate!</string>
 </resources>

@@ -1,7 +1,10 @@
 package ua.org.s4code.intellicalc.analyser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 import ua.org.s4code.intellicalc.analyser.function.CustomFunction;
@@ -19,6 +22,7 @@ public class ExprContainer implements ExprTraversalHandler {
     private String expression;
 
     private HashMap<String, Double> variables;
+    private HashMap<String, Function> functions;
 
     public ExprContainer(String expression, Expression expressionRoot) {
         variables = new HashMap<>();
@@ -57,11 +61,9 @@ public class ExprContainer implements ExprTraversalHandler {
         extractVariableData();
     }
 
-    public Expression getRoot() {
+    private Expression getRoot() {
         return root;
     }
-
-    private HashMap<String, Function> functions;
 
     public void addFunction(String name, Function function) throws Exception {
         functions.put(name, function);
@@ -94,6 +96,31 @@ public class ExprContainer implements ExprTraversalHandler {
 
     private ArrayList<Variable> exprVariables;
     private ArrayList<CustomFunction> exprFunctions;
+
+    public void getUniqueContextValues(List<IContextValue> contextValues) {
+        contextValues.clear();
+
+        ArrayList<String> existingValues = new ArrayList<>();
+        for (IContextValue var : exprVariables) {
+            if (!existingValues.contains(var.getName())) {
+                contextValues.add(var);
+                existingValues.add(var.getName());
+            }
+        }
+        for (IContextValue func : exprFunctions) {
+            if (!existingValues.contains(func.getName())) {
+                contextValues.add(func);
+                existingValues.add(func.getName());
+            }
+        }
+    }
+
+    public List<IContextValue> getUniqueContextValues() {
+        ArrayList<IContextValue> contextValues = new ArrayList<>();
+        getUniqueContextValues(contextValues);
+
+        return contextValues;
+    }
 
     private void extractVariableData() {
         if (root != null) {

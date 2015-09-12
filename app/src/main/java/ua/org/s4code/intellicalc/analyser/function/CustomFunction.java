@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.IContextValue;
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 
 /**
@@ -11,7 +12,7 @@ import ua.org.s4code.intellicalc.analyser.exception.ExprException;
  *
  * Created by Serhii on 8/11/2015.
  */
-public class CustomFunction extends Function {
+public class CustomFunction extends Function implements IContextValue {
 
     private String name;
 

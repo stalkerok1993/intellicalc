@@ -2,12 +2,13 @@ package ua.org.s4code.intellicalc.analyser.value;
 
 import ua.org.s4code.intellicalc.analyser.ExprContainer;
 import ua.org.s4code.intellicalc.analyser.Expression;
+import ua.org.s4code.intellicalc.analyser.IContextValue;
 import ua.org.s4code.intellicalc.analyser.exception.ExprException;
 
 /**
  * Created by Serhii on 8/3/2015.
  */
-public class Variable extends ValueType {
+public class Variable extends ValueType implements IContextValue {
 
     String name;
 
