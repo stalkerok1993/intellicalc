@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,8 +30,13 @@ public class ExprHistoryFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (activity instanceof IExprEditor) {
-            exprEditor = (IExprEditor) activity;
+        try {
+            if (activity instanceof IExprEditor) {
+                exprEditor = (IExprEditor) activity;
+            }
+        }
+        catch (Exception ex) {
+            Toast.makeText(getActivity().getApplicationContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -38,20 +44,34 @@ public class ExprHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View exprHistory = inflater.inflate(R.layout.expr_history, container, false);
-        ListView exprView = (ListView) exprHistory.findViewById(R.id.listHistory);
-        historyExpressions = new ArrayList<>();
-        exprAdapter = new ExprHistoryListAdapter(getActivity().getApplicationContext(),
-                exprView, historyExpressions);
-        exprAdapter.setEditor(exprEditor);
-        exprView.setAdapter(exprAdapter);
+        View exprHistory = null;
+
+        try {
+            exprHistory = inflater.inflate(R.layout.expr_history, container, false);
+            ListView exprView = (ListView) exprHistory.findViewById(R.id.listHistory);
+
+            historyExpressions = new ArrayList<>();
+            exprAdapter = new ExprHistoryListAdapter(getActivity().getApplicationContext(),
+                    exprView, historyExpressions);
+            exprAdapter.setEditor(exprEditor);
+            exprView.setAdapter(exprAdapter);
+        }
+        catch (Exception ex) {
+            Toast.makeText(getActivity().getApplicationContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
         return exprHistory;
     }
 
     public void toHistory(ExprContainer expression) {
-        historyExpressions.add(0, expression);
-        exprAdapter.notifyDataSetChanged();
+        try {
+            historyExpressions.add(0, expression);
+            exprAdapter.notifyDataSetChanged();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Toast.makeText(getActivity().getApplicationContext(), ex.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
 }

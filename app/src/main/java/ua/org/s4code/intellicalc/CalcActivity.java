@@ -36,7 +36,13 @@ public class CalcActivity extends Activity implements IExprEditor, IExprHistoryS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calc);
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fManager = getFragmentManager();
+        exprEditFragment = (ExprEditFragment) fManager
+                .findFragmentById(R.id.fragmentExprEdit);
+        exprHistoryFragment = (ExprHistoryFragment) fManager
+                .findFragmentById(R.id.fragmentExprHistory);
+
+        /*FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         exprEditFragment = new ExprEditFragment();
         Bundle bundle = new Bundle();
@@ -51,7 +57,7 @@ public class CalcActivity extends Activity implements IExprEditor, IExprHistoryS
         fragmentTransaction.add(R.id.fragmentEdit, exprEditFragment);
         exprHistoryFragment = new ExprHistoryFragment();
         fragmentTransaction.add(R.id.fragmentHistory, exprHistoryFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     @Override
@@ -78,15 +84,7 @@ public class CalcActivity extends Activity implements IExprEditor, IExprHistoryS
 
     @Override
     public void toEditor(ExprContainer expression) {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        exprEditFragment = new ExprEditFragment();
-        Bundle bundle = new Bundle();
-        ExprFragmentData data = new ExprFragmentData(expression);
-        bundle.putParcelable("key", data);
-        exprEditFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragmentEdit, exprEditFragment);
-        fragmentTransaction.commit();
+        exprEditFragment.toEditor(expression);
     }
 
     @Override

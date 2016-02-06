@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IntelligenceCalculator.iml" filepath="$PROJECT_DIR$/IntelligenceCalculator.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellicalc.iml" filepath="$PROJECT_DIR$/intellicalc.iml" />
     </modules>
   </component>
 </project>
